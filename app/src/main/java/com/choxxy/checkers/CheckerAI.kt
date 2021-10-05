@@ -21,41 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.choxxy.checkers;
+package com.choxxy.checkers
 
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*
 
 /**
  * Checkers AI engine
  */
-public final class CheckerAI {
-
+class CheckerAI {
     /**
      * Very dump AI, randomly picks a checker and randomly moves it
      *
      * @param e current game which contains current game state
      * @param isRed flag for red or black side
      */
-    public void RandomMove(GameEngine e, boolean isRed) {
-        Random rn = new Random();
+    fun randomMove(e: GameEngine, isRed: Boolean) {
+        val rn = Random()
 
         // click random checker that can move
-        LinkedList<int[]> playPieces = playablePieces(e, isRed);
-        if (playPieces.size() < 1) {
-            return;
+        val playPieces = playablePieces(e, isRed)
+        if (playPieces.size < 1) {
+            return
         }
-
-        int[] piece = playPieces.get(rn.nextInt(playPieces.size()));
-        e.Click(piece[0], piece[1]);
+        val piece = playPieces[rn.nextInt(playPieces.size)]
+        e.click(piece[0], piece[1])
 
         // click random next move
-        LinkedList<int[]> nextSteps = nextStep(e);
-        if (nextSteps.size() < 1) {
-            return;
+        val nextSteps = nextStep(e)
+        if (nextSteps.size < 1) {
+            return
         }
-        int[] next = nextSteps.get(rn.nextInt(nextSteps.size()));
-        e.Click(next[0], next[1]);
+        val next = nextSteps[rn.nextInt(nextSteps.size)]
+        e.click(next[0], next[1])
     }
 
     /**
@@ -64,17 +61,18 @@ public final class CheckerAI {
      * @param e current game which contains current game state
      * @return
      */
-    public LinkedList<int[]> nextStep(GameEngine e) {
-        LinkedList<int[]> result = new LinkedList<int[]>();
-        for (int row = 0; row < e.squaresPerSide; row++) {
-            for (int col = 0; col < e.squaresPerSide; col++) {
-                if (e.At(row, col) == Sprite.EMPTY_NEXT
-                        || e.At(row, col) == Sprite.SCORE) {
-                    result.add(new int[]{row, col});
+    fun nextStep(e: GameEngine): LinkedList<IntArray> {
+        val result = LinkedList<IntArray>()
+        for (row in 0 until e.squaresPerSide) {
+            for (col in 0 until e.squaresPerSide) {
+                if (e.at(row, col) === Sprite.EMPTY_NEXT ||
+                    e.at(row, col) === Sprite.SCORE
+                ) {
+                    result.add(intArrayOf(row, col))
                 }
             }
         }
-        return result;
+        return result
     }
 
     /**
@@ -84,21 +82,23 @@ public final class CheckerAI {
      * @param isRed flag for red or black side
      * @return
      */
-    public LinkedList<int[]> playablePieces(GameEngine e, boolean isRed) {
-        LinkedList<int[]> result = new LinkedList<int[]>();
-        for (int row = 0; row < e.squaresPerSide; row++) {
-            for (int col = 0; col < e.squaresPerSide; col++) {
-                if (isRed && e.isRed(row, col)
-                        && validRedMoves(e, row, col)) {
-                    result.add(new int[]{row, col});
+    fun playablePieces(e: GameEngine, isRed: Boolean): LinkedList<IntArray> {
+        val result = LinkedList<IntArray>()
+        for (row in 0 until e.squaresPerSide) {
+            for (col in 0 until e.squaresPerSide) {
+                if (isRed && e.isRed(col, row) &&
+                    validRedMoves(e, col, row)
+                ) {
+                    result.add(intArrayOf(col, row))
                 }
-                if (!isRed && e.isBlack(row, col)
-                        && validBlackMoves(e, row, col)) {
-                    result.add(new int[]{row, col});
+                if (!isRed && e.isBlack(col, row) &&
+                    validBlackMoves(e, col, row)
+                ) {
+                    result.add(intArrayOf(col, row))
                 }
             }
         }
-        return result;
+        return result
     }
 
     /**
@@ -109,39 +109,39 @@ public final class CheckerAI {
      * @param col
      * @return
      */
-    public boolean validBlackMoves(GameEngine e, int row, int col) {
+    private fun validBlackMoves(e: GameEngine, row: Int, col: Int): Boolean {
         // check possible moves to empty square
-        if (e.isEmpty(row - 1, col + 1)) {
-            return true;
+        if (e.isEmpty(col - 1, row + 1)) {
+            return true
         }
-        if (e.isEmpty(row + 1, col + 1)) {
-            return true;
+        if (e.isEmpty(col + 1, row + 1)) {
+            return true
         }
-        if (e.At(row, col) == Sprite.BLACK_CHECKER_S) {
-            if (e.isEmpty(row - 1, col - 1)) {
-                return true;
+        if (e.at(col, row) === Sprite.BLACK_CHECKER_S) {
+            if (e.isEmpty(col - 1, row - 1)) {
+                return true
             }
-            if (e.isEmpty(row + 1, col - 1)) {
-                return true;
+            if (e.isEmpty(col + 1, row - 1)) {
+                return true
             }
         }
 
         // check jump moves
-        if (e.isRed(row - 1, col + 1) && e.isEmpty(row - 2, col + 2)) {
-            return true;
+        if (e.isRed(col - 1, row + 1) && e.isEmpty(col - 2, row + 2)) {
+            return true
         }
-        if (e.isRed(row + 1, col + 1) && e.isEmpty(row + 2, col + 2)) {
-            return true;
+        if (e.isRed(col + 1, row + 1) && e.isEmpty(col + 2, row + 2)) {
+            return true
         }
-        if (e.At(row, col) == Sprite.BLACK_CHECKER_S) {
-            if (e.isRed(row - 1, col - 1) && e.isEmpty(row - 2, col - 2)) {
-                return true;
+        if (e.at(col, row) === Sprite.BLACK_CHECKER_S) {
+            if (e.isRed(col - 1, row - 1) && e.isEmpty(col - 2, row - 2)) {
+                return true
             }
-            if (e.isRed(row + 1, col - 1) && e.isEmpty(row + 2, col - 2)) {
-                return true;
+            if (e.isRed(col + 1, row - 1) && e.isEmpty(col + 2, row - 2)) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
     /**
@@ -152,38 +152,38 @@ public final class CheckerAI {
      * @param col
      * @return
      */
-    public boolean validRedMoves(GameEngine e, int row, int col) {
+    private fun validRedMoves(e: GameEngine, row: Int, col: Int): Boolean {
         // check possible moves to empty square
         if (e.isEmpty(row - 1, col - 1)) {
-            return true;
+            return true
         }
         if (e.isEmpty(row + 1, col - 1)) {
-            return true;
+            return true
         }
-        if (e.At(row, col) == Sprite.RED_CHECKER_S) {
+        if (e.at(row, col) === Sprite.RED_CHECKER_S) {
             if (e.isEmpty(row - 1, col + 1)) {
-                return true;
+                return true
             }
             if (e.isEmpty(row + 1, col + 1)) {
-                return true;
+                return true
             }
         }
 
         // check jump moves
         if (e.isBlack(row - 1, col - 1) && e.isEmpty(row - 2, col - 2)) {
-            return true;
+            return true
         }
         if (e.isBlack(row + 1, col - 1) && e.isEmpty(row + 2, col - 2)) {
-            return true;
+            return true
         }
-        if (e.At(row, col) == Sprite.RED_CHECKER_S) {
+        if (e.at(row, col) === Sprite.RED_CHECKER_S) {
             if (e.isBlack(row - 1, col - 1) && e.isEmpty(row - 2, col - 2)) {
-                return true;
+                return true
             }
             if (e.isBlack(row + 1, col - 1) && e.isEmpty(row + 2, col - 2)) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 }

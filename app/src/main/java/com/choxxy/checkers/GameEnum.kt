@@ -21,17 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.choxxy.checkers;
+package com.choxxy.checkers
 
 /**
  * Identifies game state
  *
  * @author vitaliy
  */
-public enum GameEnum {
-
-    PLAY,
-    GAME_OVER,
-    RED,
-    BLACK
+enum class GameEnum {
+    PLAY, GAME_OVER, RED, BLACK
 }
