@@ -21,55 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.choxxy.checkers;
+package com.choxxy.checkers
 
-import android.app.Activity;
-import android.graphics.Point;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.graphics.Point
+import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import com.choxxy.checkers.databinding.ActivityMainBinding
 
 /**
  * View for static checker board test
  */
-public class SimpleCheckersActivity extends Activity {
+class SimpleCheckersActivity : AppCompatActivity(), ScoreListener {
 
-    public static int SCREEN_X;
-    public static int SCREEN_Y;
-
-    public static TextView redScore;
-    public static TextView blackScore;
-
+    private lateinit var binding: ActivityMainBinding
     /**
      * Called when the activity is first created.
      *
      * @param savedInstanceState
      */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Point screenSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(screenSize);
-        SCREEN_X = screenSize.x;
-        SCREEN_Y = screenSize.y;
-
-        setContentView(R.layout.main);
-
-        redScore = (TextView) findViewById(R.id.redScoreText);
-        blackScore = (TextView) findViewById(R.id.blackScoreText);
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.checkerView.setScoreListener(this)
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            default:
-                return super.onOptionsItemSelected(item);
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun upDateScores(redScore: Int, blackScore: Int) {
+        binding.redScoreText.text = getString(R.string.scores, redScore)
+        binding.blackScoreText.text = getString(R.string.scores, blackScore)
     }
 }
